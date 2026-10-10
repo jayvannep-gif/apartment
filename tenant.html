@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Account — Apartment Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="topbar"><h1>🏠 My Account</h1><button class="btn small" id="logout">Log out</button></div>
+
+  <main>
+    <!-- Message about ID status (filled in by tenant.js) -->
+    <div id="idNotice" class="notice"></div>
+
+    <!-- Personal info -->
+    <div class="card"><h2>My information</h2><div id="info"></div></div>
+
+    <!-- Upload ID (hidden once approved) -->
+    <div class="card" id="idCard">
+      <h2>Government ID</h2>
+      <form id="idForm">
+        <label>ID type
+          <select id="idType">
+            <option>UMID</option><option>Driver's License</option><option>Passport</option><option>Postal ID</option><option>Other</option>
+          </select>
+        </label>
+        <label>File (JPG, PNG or PDF — max 5MB) <input type="file" id="idFile" accept=".jpg,.jpeg,.png,.pdf" required></label>
+        <button class="btn">Upload ID</button>
+      </form>
+    </div>
+
+    <!-- Everything below is only shown after the landlord approves the ID -->
+    <div id="approvedArea" class="hidden">
+      <div class="card"><h2>This month's bill</h2><div id="bill"></div></div>
+      <div class="card"><h2>Payment history</h2><div id="history"></div></div>
+
+      <div class="card">
+        <h2>Report a problem</h2>
+        <form id="reportForm">
+          <label>Issue type
+            <select id="issueType"><option>Plumbing</option><option>Electrical</option><option>Water Supply</option><option>Internet</option><option>Appliance</option><option>Other</option></select>
+          </label>
+          <label>Photo (optional) <input type="file" id="photo" accept=".jpg,.jpeg,.png"></label>
+          <label class="wide">Description <textarea id="desc" required></textarea></label>
+          <button class="btn">Submit report</button>
+        </form>
+      </div>
+      <div class="card"><h2>My reports</h2><div id="myReports"></div></div>
+    </div>
+  </main>
+
+  <script type="module" src="tenant.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Landlord — Apartment Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="topbar"><h1>🏠 Landlord Panel</h1><button class="btn small" id="logout">Log out</button></div>
+
+  <!-- Tab buttons: data-tab matches the id of a section below -->
+  <nav class="tabs">
+    <button data-tab="dashboard" class="active">Dashboard</button>
+    <button data-tab="rooms">Rooms</button>
+    <button data-tab="tenants">Tenants</button>
+    <button data-tab="payments">Payments</button>
+    <button data-tab="utilities">Utilities</button>
+    <button data-tab="reports">Reports</button>
+  </nav>
+
+  <main>
+    <!-- ========== DASHBOARD ========== -->
+    <section id="dashboard" class="panel show">
+      <div class="stats">
+        <div class="stat"><b id="statRooms">0</b>Total rooms</div>
+        <div class="stat"><b id="statOccupied">0</b>Occupied</div>
+        <div class="stat"><b id="statVacant">0</b>Vacant</div>
+        <div class="stat"><b id="statOverdue">0</b>Overdue tenants</div>
+      </div>
+      <div class="card"><h2>🔴 Overdue payments</h2><ul id="overdueList"></ul></div>
+      <div class="card"><h2>Recent reports</h2><div id="recentReports"></div></div>
+    </section>
+
+    <!-- ========== ROOMS ========== -->
+    <section id="rooms" class="panel">
+      <div class="card">
+        <h2>Add / edit room</h2>
+        <form id="roomForm">
+          <input type="hidden" id="rId">
+          <label>Room number <input id="rNumber" required></label>
+          <label>Floor <input type="number" id="rFloor" required></label>
+          <label>Rent price (₱) <input type="number" id="rRent" required></label>
+          <label>Status <select id="rStatus"><option value="vacant">Vacant</option><option value="occupied">Occupied</option></select></label>
+          <button class="btn">Save room</button>
+        </form>
+      </div>
+      <div class="card" id="roomTable"></div>
+    </section>
+
+    <!-- ========== TENANTS ========== -->
+    <section id="tenants" class="panel">
+      <p class="muted">Tenants create their own account. Click <b>Edit</b> to assign a room and fill in move-in details.</p>
+      <div class="card hidden" id="tenantFormCard">
+        <h2>Edit tenant</h2>
+        <form id="tenantForm">
+          <input type="hidden" id="tId">
+          <label>Name <input id="tName" required></label>
+          <label>Contact <input id="tContact" required></label>
+          <label>Room <select id="tRoom"></select></label>
+          <label>Move-in date <input type="date" id="tMoveIn"></label>
+          <label>Deposit (₱) <input type="number" id="tDeposit" value="0"></label>
+          <label>Advance (₱) <input type="number" id="tAdvance" value="0"></label>
+          <button class="btn">Save tenant</button>
+        </form>
+      </div>
+      <div class="card" id="tenantTable"></div>
+    </section>
+
+    <!-- ========== PAYMENTS ========== -->
+    <section id="payments" class="panel">
+      <div class="card">
+        <h2>Record a payment</h2>
+        <form id="payForm">
+          <label>Tenant <select id="pTenant" required></select></label>
+          <label>Amount (₱) <input type="number" id="pAmount" required></label>
+          <label>Date paid <input type="date" id="pDate" required></label>
+          <label>Month covered <input type="month" id="pMonth" required></label>
+          <button class="btn">Save payment</button>
+        </form>
+      </div>
+      <div class="card"><h2>Who has paid this month?</h2><div id="payStatus"></div></div>
+      <div class="card"><h2>Monthly income</h2><div id="incomeTable"></div></div>
+      <div class="card"><h2>All payments</h2><div id="payTable"></div></div>
+    </section>
+
+    <!-- ========== UTILITIES ========== -->
+    <section id="utilities" class="panel">
+      <div class="card">
+        <h2>Log electricity &amp; water</h2>
+        <form id="utilForm">
+          <label>Room <select id="uRoom" required></select></label>
+          <label>Reading date <input type="date" id="uDate" required></label>
+          <label>Electricity used (kWh) <input type="number" step="0.01" id="uKwh" value="0" required></label>
+          <label>Water used (m³) <input type="number" step="0.01" id="uWater" value="0" required></label>
+          <label>Rate per kWh (₱) <input type="number" step="0.01" id="uKwhRate" value="12"></label>
+          <label>Rate per m³ (₱) <input type="number" step="0.01" id="uWaterRate" value="30"></label>
+          <button class="btn">Save &amp; calculate</button>
+        </form>
+      </div>
+      <div class="card" id="utilTable"></div>
+    </section>
+
+    <!-- ========== REPORTS ========== -->
+    <section id="reports" class="panel"><div id="reportList"></div></section>
+  </main>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

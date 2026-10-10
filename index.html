@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login — Apartment Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-box">
+    <h1 style="color:var(--main)">🏠 Apartment Manager</h1>
+
+    <!-- LOGIN FORM -->
+    <div class="card" id="loginCard">
+      <h2>Log in</h2>
+      <form id="loginForm">
+        <label>Email <input type="email" id="loginEmail" required></label>
+        <label>Password <input type="password" id="loginPass" required></label>
+        <button class="btn">Log in</button>
+      </form>
+      <p class="muted">New tenant? <button class="link" id="showRegister">Create an account</button></p>
+    </div>
+
+    <!-- TENANT REGISTRATION FORM -->
+    <div class="card hidden" id="registerCard">
+      <h2>Tenant registration</h2>
+      <form id="registerForm">
+        <label>Full name <input id="regName" required></label>
+        <label>Contact number <input id="regContact" required></label>
+        <label>Email <input type="email" id="regEmail" required></label>
+        <label>Password (min. 6 characters) <input type="password" id="regPass" minlength="6" required></label>
+        <button class="btn">Register</button>
+      </form>
+      <p class="muted">Already registered? <button class="link" id="showLogin">Log in</button></p>
+    </div>
+
+    <p id="msg" class="notice red hidden"></p>
+  </div>
+
+  <script type="module">
+    import { supabase, run } from "./common.js";
+    const $ = id => document.getElementById(id);
+
+    // Switch between the login and register boxes
+    $("showRegister").onclick = () => { $("loginCard").classList.add("hidden"); $("registerCard").classList.remove("hidden"); };
+    $("showLogin").onclick = () => { $("registerCard").classList.add("hidden"); $("loginCard").classList.remove("hidden"); };
+    function showError(text) { $("msg").textContent = text; $("msg").classList.remove("hidden"); }
+
+    // After login, send the person to the right page based on their role
+    async function goToDashboard(uid) {
+      const { data } = await supabase.from("users").select("role").eq("id", uid).single();
+      if (!data) return showError("No profile found for this account.");
+      location.href = data.role === "admin" ? "admin.html" : "tenant.html";
+    }
+
+    // LOGIN
+    $("loginForm").onsubmit = async e => {
+      e.preventDefault();
+      const { data, error } = await supabase.auth.signInWithPassword({ email: $("loginEmail").value, password: $("loginPass").value });
+      if (error) return showError("Wrong email or password (or your email isn't confirmed yet).");
+      goToDashboard(data.user.id);
+    };
+
+    // REGISTER — the database automatically creates the tenant's profile (see schema.sql)
+    $("registerForm").onsubmit = async e => {
+      e.preventDefault();
+      const { data, error } = await supabase.auth.signUp({
+        email: $("regEmail").value, password: $("regPass").value,
+        options: { data: { name: $("regName").value.trim(), contact: $("regContact").value.trim() } }
+      });
+      if (error) return showError(error.message);
+      if (data.session) location.href = "tenant.html";
+      else showError("Almost done! Check your email to confirm your account, then log in.");
+    };
+  </script>
+</body>
+</html>
